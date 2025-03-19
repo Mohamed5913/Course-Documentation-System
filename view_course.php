@@ -1,0 +1,128 @@
+<?php
+session_start();
+require_once 'Database.php';
+require_once 'Course.php';
+require_once 'Assignment.php';
+require_once 'Quiz.php';
+
+// Ensure the user is logged in
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$db = new Database();
+$course = new Course($db);
+$assignment = new Assignment($db);
+$quiz = new Quiz($db);
+
+$course_id = $_GET['id'];
+$user_id = $_SESSION['id'];
+$role = $_SESSION['role'];
+
+// Fetch course details
+$course_details = $course->getCourseDetails($course_id);
+
+// Fetch quizzes for the course
+$quizzes = $quiz->getQuizzesByCourse($course_id);
+
+// Fetch assignments for the course
+$assignments = $assignment->getAssignmentsByCourse($course_id);
+
+// Handle assignment submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['assignment_file']) && isset($_POST['assignment_id'])) {
+    $assignment_id = $_POST['assignment_id'];
+    $file_name = $_FILES['assignment_file']['name'];
+    $file_tmp = $_FILES['assignment_file']['tmp_name'];
+    $file_path = "uploads/assignments/" . basename($file_name);
+
+    if (move_uploaded_file($file_tmp, $file_path)) {
+        $assignment->submitAssignment($assignment_id, $user_id, $file_path, $file_name);
+        $success_message = "Assignment submitted successfully!";
+    } else {
+        $success_message = "Failed to upload the file.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Course</title>
+    <link rel="stylesheet" href="view_course.css">
+</head>
+<body>
+    <header>
+        <h1 class="course-title"><?= htmlspecialchars($course_details['course_name']) ?></h1>
+    </header>
+
+    <main class="course-main">
+        <!-- Go Back to Dashboard Button -->
+        <div class="dashboard-btn-container">
+            <button onclick="window.location.href='<?= ($role === 'instructor') ? 'instructor_dashboard.php' : 'student_dashboard.php' ?>'" class="dashboard-btn">
+                Go Back to Dashboard
+            </button>
+        </div>
+
+        <p class="course-description"><?= htmlspecialchars($course_details['description']) ?></p>
+
+        <!-- Display Quizzes -->
+        <section class="course-section">
+            <h3 class="section-title">Quizzes</h3>
+            <?php if ($quizzes->num_rows > 0): ?>
+                <ul class="quiz-list">
+                    <?php while ($quiz = $quizzes->fetch_assoc()): ?>
+                        <li class="quiz-item">
+                            <a href="take_quiz.php?quiz_id=<?= $quiz['id'] ?>&course_id=<?= $course_id ?>">
+                                <?= htmlspecialchars($quiz['title']) ?>
+                            </a>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+            <?php else: ?>
+                <p class="no-items">No quizzes available for this course.</p>
+            <?php endif; ?>
+        </section>
+
+        <!-- Display Assignments -->
+        <section class="assignments-section">
+            <h3 class="section-title">Assignments</h3>
+            <?php if ($assignments->num_rows > 0): ?>
+                <ul>
+                    <?php while ($assignment = $assignments->fetch_assoc()): ?>
+                        <li class="assignment-item">
+                            <h4 class="assignment-name"><?= htmlspecialchars($assignment['assignment_title']) ?></h4>
+                            <p class="assignment-details"><?= htmlspecialchars($assignment['assignment_details']) ?></p>
+                            <p class="due-date"><strong>Due Date:</strong> <?= htmlspecialchars($assignment['due_date']) ?></p>
+
+                            <!-- Download Assignment File -->
+                            <?php if (!empty($assignment['assignment_file'])): ?>
+                                <a href="<?= htmlspecialchars($assignment['assignment_file']) ?>" download class="download-btn">
+                                    Download Assignment
+                                </a>
+                            <?php else: ?>
+                                <p>No file uploaded for this assignment.</p>
+                            <?php endif; ?>
+
+                            <!-- Assignment Submission Form -->
+                            <form action="view_course.php?id=<?= $course_id ?>" method="POST" enctype="multipart/form-data" class="assignment-form">
+                                <input type="hidden" name="assignment_id" value="<?= $assignment['id'] ?>">
+                                <label for="assignment_file">Submit your assignment:</label>
+                                <input type="file" name="assignment_file" id="assignment_file" required>
+                                <button type="submit">Submit Assignment</button>
+                            </form>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+                <?php if (isset($success_message)): ?>
+                    <div class="success-message"><?= $success_message ?></div>
+                <?php endif; ?>
+            <?php else: ?>
+                <p class="no-assignments">No assignments available for this course.</p>
+            <?php endif; ?>
+        </section>
+    </main>
+</body>
+</html>

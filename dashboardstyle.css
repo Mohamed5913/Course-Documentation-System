@@ -1,0 +1,163 @@
+/* Resetting margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 20px;
+}
+
+#your-courses {
+    margin-top: 30px;
+}
+
+#your-courses h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#your-courses ul {
+    list-style-type: none;
+}
+
+#your-courses li {
+    margin-bottom: 15px;
+}
+
+#your-courses li a {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+#your-courses li a:hover {
+    text-decoration: underline;
+}
+
+#add-course {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#add-course h2 {
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Night Mode Button Positioning */
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    position: absolute;
+    left: 70%;
+  }
+  
+  .night-mode-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .label {
+    background-color: #ddd;
+    display: flex;
+    height: 30px;
+    width: 60px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 50px;
+    padding: 0 15px;
+    transition: background-color 0.5s ease;
+    cursor: pointer;
+  }
+  
+  .label .fa-moon {
+    color: #ffffff;
+  }
+  
+  .label .fa-sun {
+    color: #f3bc24;
+  }
+  
+  .blob {
+    position: absolute;
+    left: 0;
+    width: 50%;
+    height: 80%;
+    background-color: #a9f1f3;
+    border-radius: 50px;
+    transition: all 0.5s ease;
+  }
+  
+  .checkbox {
+    opacity: 0;
+    position: absolute;
+  }
+
+.label .fa-moon {
+    color: #ffffff;
+}
+
+.label .fa-sun {
+    color: #f3bc24;
+}

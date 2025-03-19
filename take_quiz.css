@@ -1,0 +1,109 @@
+/* take_quiz.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #2d3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+main {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.question-container {
+    margin-bottom: 30px;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.choices {
+    margin-left: 20px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Quiz Result Styles */
+.quiz-result {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quiz-result h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.quiz-result p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.quiz-result .pass {
+    color: green;
+    font-weight: bold;
+}
+
+.quiz-result .fail {
+    color: red;
+    font-weight: bold;
+}
+
+/* Redirection Button */
+.redirect-btn {
+    display: block;
+    margin: 20px auto;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.redirect-btn:hover {
+    background-color: #218838;
+}
