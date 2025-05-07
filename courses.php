@@ -1,16 +1,13 @@
 <?php
 session_start();
-include 'db.php';  // Database connection
+require_once 'Database.php';
+require_once 'Course.php';
 
-// Check the role of the user (instructor or student)
+$db = new Database();
+$courseModel = new Course($db);
+
 if ($_SESSION['role'] === 'instructor') {
-    // Fetch courses added by the instructor
-    $query = "SELECT * FROM courses WHERE instructor_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $_SESSION['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
+    $result = $courseModel->getCoursesByInstructor($_SESSION['id']);
     if ($result->num_rows > 0) {
         echo "<ul>";
         while ($course = $result->fetch_assoc()) {
@@ -21,16 +18,7 @@ if ($_SESSION['role'] === 'instructor') {
         echo "No courses added yet.";
     }
 } else if ($_SESSION['role'] === 'student') {
-    // Fetch courses the student is registered for
-    $query = "SELECT c.course_name, c.description 
-              FROM courses c
-              JOIN course_registrations r ON c.id = r.course_id
-              WHERE r.student_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $_SESSION['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
+    $result = $courseModel->getCoursesByStudent($_SESSION['id']);
     if ($result->num_rows > 0) {
         echo "<ul>";
         while ($course = $result->fetch_assoc()) {

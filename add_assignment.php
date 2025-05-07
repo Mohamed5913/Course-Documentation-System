@@ -1,6 +1,7 @@
 <?php
 session_start();
-include 'db.php';
+require_once 'Database.php';
+require_once 'Assignment.php';
 
 // Ensure the user is logged in and is an instructor
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
@@ -8,19 +9,20 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
     exit();
 }
 
+$db = new Database();
+$assignment = new Assignment($db);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $course_id = $_POST['course_id'];
-    $assignment_name = $_POST['assignment_name'];
+    $assignment_title = $_POST['assignment_name'];
     $assignment_details = $_POST['assignment_details'];
     $due_date = $_POST['due_date'];
 
-    // Insert the assignment into the database
-    $stmt = $conn->prepare("INSERT INTO assignments (course_id, assignment_name, assignment_details, due_date) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isss", $course_id, $assignment_name, $assignment_details, $due_date);
-    $stmt->execute();
-
-    echo "Assignment added successfully!";
-    header("Location: course_details.php?id=$course_id"); // Redirect to course details page
-    exit();
+    if ($assignment->addAssignment($course_id, $assignment_title, $assignment_details, $due_date)) {
+        header("Location: course_details.php?id=$course_id");
+        exit();
+    } else {
+        echo "Error adding assignment.";
+    }
 }
 ?>

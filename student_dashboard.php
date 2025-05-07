@@ -26,6 +26,29 @@ $registered_courses = $course->getCoursesByStudent($student_id, $search_query);
 
 // Fetch all available courses based on the search query (excluding already registered ones)
 $available_courses = $course->getAvailableCourses($student_id, $search_query);
+
+// Fetch notifications for the student
+$notifications = [];
+$conn = $db->getConnection();
+$stmt = $conn->prepare("SELECT id, message, is_read FROM notifications WHERE user_id = ? AND user_role = 'student' ORDER BY created_at DESC");
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $notifications[] = $row;
+}
+$unread = array_filter($notifications, fn($n) => !$n['is_read']);
+
+// Handle marking notifications as read
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
+    $notif_id = intval($_POST['mark_read_id']);
+    $stmt = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $notif_id, $student_id);
+    $stmt->execute();
+    // Refresh to update the notifications list
+    echo "<script>window.location.href=window.location.href;</script>";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -50,50 +73,107 @@ $available_courses = $course->getAvailableCourses($student_id, $search_query);
 
     <header>
         <h1>Student Dashboard</h1>
-        <a href="logout.php" class="logout">Logout</a>
+        <div class="header-actions">
+            <!-- Notification Bell -->
+            <div class="notification-bell-container">
+                <button id="notification-bell" class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <?php if (count($unread) > 0): ?>
+                        <span class="notification-count"><?= count($unread) ?></span>
+                    <?php endif; ?>
+                </button>
+                <div id="notifications-dropdown" class="notifications-dropdown" style="display:none;">
+                    <h4>Notifications</h4>
+                    <?php if (count($notifications) > 0): ?>
+                        <ul class="notifications-list">
+                            <?php foreach ($notifications as $notif): ?>
+                                <li style="<?php if(!$notif['is_read']) echo 'font-weight:bold;'; ?>">
+                                    <?= htmlspecialchars($notif['message']) ?>
+                                    <?php if (!$notif['is_read']): ?>
+                                        <form method="POST" action="" style="display:inline;">
+                                            <input type="hidden" name="mark_read_id" value="<?= $notif['id'] ?>">
+                                            <button type="submit" class="mark-read-btn">Mark as read</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="no-courses-message">No notifications.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <a href="logout.php" class="logout">Logout</a>
+        </div>
     </header>
 
     <main>
         <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
 
-        <!-- Search Bar -->
-        <form method="GET" action="student_dashboard.php" class="search-bar">
-            <input type="text" name="search" placeholder="Search for a course..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-            <button type="submit">Search</button>
-        </form>
+        <!-- Courses Tab -->
+        <div id="courses-tab" class="tab-content">
+            <!-- Search Bar -->
+            <form method="GET" action="student_dashboard.php" class="search-bar">
+                <input type="text" name="search" placeholder="Search for a course..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <button type="submit">Search</button>
+            </form>
 
-        <h3>Your Registered Courses</h3>
-        <?php if ($registered_courses->num_rows > 0): ?>
-            <div class="course-list">
-                <?php while ($course = $registered_courses->fetch_assoc()): ?>
-                    <div class="course-card">
-                        <h3><?php echo htmlspecialchars($course['course_name']); ?></h3>
-                        <p><strong>Description:</strong> <?php echo htmlspecialchars($course['description']); ?></p>
-                        <button onclick="window.location.href='view_course.php?id=<?php echo $course['id']; ?>'">View Course</button>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-        <?php else: ?>
-            <p class="no-courses-message">No registered courses match your search.</p>
-        <?php endif; ?>
+            <h3>Your Registered Courses</h3>
+            <?php if ($registered_courses->num_rows > 0): ?>
+                <div class="course-list">
+                    <?php while ($course = $registered_courses->fetch_assoc()): ?>
+                        <div class="course-card">
+                            <h3><?php echo htmlspecialchars($course['course_name']); ?></h3>
+                            <p><strong>Description:</strong> <?php echo htmlspecialchars($course['description']); ?></p>
+                            <button onclick="window.location.href='view_course.php?id=<?php echo $course['id']; ?>'">View Course</button>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            <?php else: ?>
+                <p class="no-courses-message">No registered courses match your search.</p>
+            <?php endif; ?>
 
-        <h3>Available Courses to Register</h3>
-        <?php if ($available_courses->num_rows > 0): ?>
-            <div class="course-list">
-                <?php while ($course = $available_courses->fetch_assoc()): ?>
-                    <div class="course-card">
-                        <h3><?php echo htmlspecialchars($course['course_name']); ?></h3>
-                        <p><strong>Description:</strong> <?php echo htmlspecialchars($course['description']); ?></p>
-                        <form action="register_course.php" method="POST">
-                            <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
-                            <button type="submit">Register</button>
-                        </form>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-        <?php else: ?>
-            <p class="no-courses-message">No available courses match your search.</p>
-        <?php endif; ?>
+            <h3>Available Courses to Register</h3>
+            <?php if ($available_courses->num_rows > 0): ?>
+                <div class="course-list">
+                    <?php while ($course = $available_courses->fetch_assoc()): ?>
+                        <div class="course-card">
+                            <h3><?php echo htmlspecialchars($course['course_name']); ?></h3>
+                            <p><strong>Description:</strong> <?php echo htmlspecialchars($course['description']); ?></p>
+                            <form action="register_course.php" method="POST">
+                                <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
+                                <button type="submit">Register</button>
+                            </form>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            <?php else: ?>
+                <p class="no-courses-message">No available courses match your search.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="notifications-tab" class="tab-content" style="display:none;">
+            <h3>Your Notifications</h3>
+            <?php if (count($notifications) > 0): ?>
+                <ul class="notifications-list">
+                    <?php foreach ($notifications as $notif): ?>
+                        <li style="<?php if(!$notif['is_read']) echo 'font-weight:bold;'; ?>">
+                            <?= htmlspecialchars($notif['message']) ?>
+                            <small>(<?= $notif['created_at'] ?>)</small>
+                            <?php if (!$notif['is_read']): ?>
+                                <form method="POST" action="" style="display:inline;">
+                                    <input type="hidden" name="mark_read_id" value="<?= $notif['id'] ?>">
+                                    <button type="submit" class="mark-read-btn">Mark as read</button>
+                                </form>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No notifications.</p>
+            <?php endif; ?>
+        </div>
     </main>
 
     <script>
@@ -117,7 +197,28 @@ $available_courses = $course->getAvailableCourses($student_id, $search_query);
                     localStorage.setItem("night-mode", "disabled");
                 }
             });
+
+            function showTab(tabId) {
+                document.getElementById('courses-tab').style.display = (tabId === 'courses-tab') ? 'block' : 'none';
+                document.getElementById('notifications-tab').style.display = (tabId === 'notifications-tab') ? 'block' : 'none';
+            }
+            // Show courses tab by default
+            showTab('courses-tab');
+
+            // Notification dropdown toggle
+            const bell = document.getElementById('notification-bell');
+            const dropdown = document.getElementById('notifications-dropdown');
+            document.addEventListener('click', function(event) {
+                // If bell is clicked, toggle dropdown
+                if (bell.contains(event.target)) {
+                    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+                } else {
+                    // Hide dropdown if clicked outside
+                    dropdown.style.display = 'none';
+                }
+            });
         });
     </script>
+    
 </body>
 </html>

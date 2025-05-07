@@ -4,6 +4,7 @@ require_once 'Database.php';
 require_once 'Course.php';
 require_once 'Assignment.php';
 require_once 'Quiz.php';
+require_once 'Material.php';
 
 // Ensure the user is logged in
 if (!isset($_SESSION['username'])) {
@@ -28,6 +29,9 @@ $quizzes = $quiz->getQuizzesByCourse($course_id);
 
 // Fetch assignments for the course
 $assignments = $assignment->getAssignmentsByCourse($course_id);
+
+$material = new Material($db);
+$materials = $material->getMaterialsByCourse($course_id);
 
 // Handle assignment submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['assignment_file']) && isset($_POST['assignment_id'])) {
@@ -67,6 +71,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['assignment_file']) &
         </div>
 
         <p class="course-description"><?= htmlspecialchars($course_details['description']) ?></p>
+
+
+        <!-- Display Course Materials -->
+        <section class="materials-section">
+            <h3 class="section-title">Course Materials</h3>
+            <?php if ($materials && $materials->num_rows > 0): ?>
+                <ul class="materials-list">
+                    <?php while ($material = $materials->fetch_assoc()): ?>
+                        <li class="material-item">
+                            <a href="<?= htmlspecialchars($material['material_path']) ?>" download>
+                                <?= htmlspecialchars($material['material_title']) ?>
+                            </a>
+                            <?php if (!empty($material['description'])): ?>
+                                <p><?= htmlspecialchars($material['description']) ?></p>
+                            <?php endif; ?>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+            <?php else: ?>
+                <p class="no-materials">No materials uploaded for this course.</p>
+            <?php endif; ?>
+        </section>
 
         <!-- Display Quizzes -->
         <section class="course-section">

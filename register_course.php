@@ -1,52 +1,25 @@
 <?php
 session_start();
-
-// Include the Database class
 require_once 'Database.php';
+require_once 'Course.php';
 
-// Create a new Database instance
 $db = new Database();
+$course = new Course($db);
 
-// Get the database connection
 $conn = $db->getConnection();
-
-// Fetch available courses for registration
 $query = "SELECT * FROM courses";
 $result = $conn->query($query);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle course registration
     $course_id = $_POST['course_id'];
     $student_id = $_SESSION['id'];
 
-    // Check if the student is already registered for the selected course
-    $check_query = "SELECT * FROM course_registrations WHERE student_id = ? AND course_id = ?";
-    $stmt_check = $conn->prepare($check_query);
-    if ($stmt_check === false) {
-        die("Error in query preparation: " . $conn->error);
-    }
-    $stmt_check->bind_param("ii", $student_id, $course_id);
-    $stmt_check->execute();
-    $result_check = $stmt_check->get_result();
-
-    if ($result_check->num_rows > 0) {
-        // If the student is already registered, display an error message
-        echo "<div class='error-message'>You are already registered for this course.</div>";
+    // Use OOP method for registration
+    if ($course->registerStudentToCourse($student_id, $course_id)) {
+        header("Location: student_dashboard.php");
+        exit();
     } else {
-        // If the student is not registered, proceed with the registration
-        $stmt = $conn->prepare("INSERT INTO course_registrations (student_id, course_id) VALUES (?, ?)");
-        if ($stmt === false) {
-            die("Error in query preparation: " . $conn->error);
-        }
-        $stmt->bind_param("ii", $student_id, $course_id);
-        
-        if ($stmt->execute()) {
-            // Redirect the student to the courses page after successful registration
-            header("Location: student_dashboard.php");  // Redirect to the student dashboard or courses page
-            exit();
-        } else {
-            echo "<div class='error-message'>Error: " . $stmt->error . "</div>";
-        }
+        echo "<div class='error-message'>You are already registered for this course or an error occurred.</div>";
     }
 }
 ?>

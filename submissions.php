@@ -1,6 +1,7 @@
 <?php
 session_start();
-include 'db.php';  // Ensure you're connected to the database
+require_once 'Database.php';
+require_once 'Submission.php';
 
 // Ensure the user is logged in and is an instructor
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
@@ -10,7 +11,12 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
 
 $assignment_id = $_GET['assignment_id'];
 
+$db = new Database();
+$submissionModel = new Submission($db);
+$submissions_result = $submissionModel->getSubmissionsByAssignment($assignment_id);
+
 // Fetch the assignment details
+$conn = $db->getConnection();
 $assignment_stmt = $conn->prepare("SELECT * FROM assignments WHERE id = ?");
 $assignment_stmt->bind_param("i", $assignment_id);
 $assignment_stmt->execute();
@@ -22,13 +28,6 @@ if ($assignment_result->num_rows === 0) {
 }
 
 $assignment = $assignment_result->fetch_assoc();
-
-
-// Fetch student submissions for the assignment
-$submissions_stmt = $conn->prepare("SELECT * FROM submissions WHERE assignment_id = ?");
-$submissions_stmt->bind_param("i", $assignment_id);
-$submissions_stmt->execute();
-$submissions_result = $submissions_stmt->get_result();
 ?>
 
 <!DOCTYPE html>

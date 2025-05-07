@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Include the Database class
 require_once 'Database.php';
 
 // Create a new Database instance

@@ -1,6 +1,7 @@
 <?php
 session_start();
-include 'db.php'; // Database connection
+require_once 'Database.php';
+require_once 'Course.php';
 
 // Ensure the user is logged in and is an instructor
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
@@ -9,34 +10,25 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'instructor') {
 }
 
 $course_id = $_GET['id'];
-$instructor_id = $_SESSION['id']; // Get the instructor's ID from session
+$instructor_id = $_SESSION['id'];
+
+$db = new Database();
+$courseModel = new Course($db);
 
 // Fetch course details
-$stmt = $conn->prepare("SELECT * FROM courses WHERE id = ? AND instructor_id = ?");
-$stmt->bind_param("ii", $course_id, $instructor_id); // Using instructor_id for the query
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
+$course = $courseModel->getCourseDetails($course_id);
+if (!$course || $course['instructor_id'] != $instructor_id) {
     echo "Course not found or you are not authorized to edit this course.";
     exit();
 }
 
-$course = $result->fetch_assoc();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $course_name = $_POST['course_name'];
     $description = $_POST['description'];
-
-    $update_stmt = $conn->prepare("UPDATE courses SET course_name = ?, description = ? WHERE id = ?");
-    $update_stmt->bind_param("ssi", $course_name, $description, $course_id);
-
-    if ($update_stmt->execute()) {
-        header("Location: instructor-dashboard.php");
-        exit();
-    } else {
-        echo "Error: " . $update_stmt->error;
-    }
+    $sql = "UPDATE courses SET course_name = ?, description = ? WHERE id = ?";
+    $db->execute($sql, [$course_name, $description, $course_id]);
+    header("Location: instructor-dashboard.php");
+    exit();
 }
 ?>
 

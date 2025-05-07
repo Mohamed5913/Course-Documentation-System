@@ -40,5 +40,17 @@ class Course {
             ) AND course_name LIKE ?";
         return $this->db->query($sql, [$student_id, $search_query]);
     }
+
+    public function registerStudentToCourse($student_id, $course_id) {
+        // Check if already registered
+        $sql = "SELECT * FROM course_registrations WHERE student_id = ? AND course_id = ?";
+        $result = $this->db->query($sql, [$student_id, $course_id]);
+        if ($result->num_rows > 0) {
+            return false; // Already registered
+        }
+        // Register the student
+        $sql = "INSERT INTO course_registrations (student_id, course_id) VALUES (?, ?)";
+        return $this->db->execute($sql, [$student_id, $course_id]);
+    }
 }
 ?>

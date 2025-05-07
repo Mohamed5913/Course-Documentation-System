@@ -32,12 +32,14 @@ h3 {
   color: #007bff;
 }
 
-p, label {
+p,
+label {
   margin-bottom: 10px;
   line-height: 1.6;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -92,7 +94,7 @@ input[type="file"]::file-selector-button:hover {
 
 /* Night Mode Button Positioning */
 .night-mode-button {
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1000;
@@ -148,20 +150,23 @@ input[type="file"]::file-selector-button:hover {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-      transform: translateY(0);
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
   }
   40% {
-      transform: translateY(-10px);
+    transform: translateY(-10px);
   }
   60% {
-      transform: translateY(-5px);
+    transform: translateY(-5px);
   }
 }
 .button-hover {
   animation: bounce 1s;
 }
-
 
 /* Night Mode Styling */
 body.night {
@@ -189,7 +194,9 @@ body.night .blob {
   left: 50%;
 }
 
-body.night h1, body.night h3, body.night p {
+body.night h1,
+body.night h3,
+body.night p {
   color: white;
 }
 
@@ -198,13 +205,16 @@ body.night #course-info {
   color: white;
 }
 
-body.night input, body.night textarea, body.night button {
+body.night input,
+body.night textarea,
+body.night button {
   background-color: #444;
   color: white;
   border: 1px solid #555;
 }
 
-body.night input::placeholder, body.night textarea::placeholder {
+body.night input::placeholder,
+body.night textarea::placeholder {
   color: #aaa;
 }
 
