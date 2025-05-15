@@ -1,282 +1,429 @@
 /* Resetting margins and padding */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
 header {
-    position: relative; /* Added for absolute positioning of the night mode button */
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    text-align: center;
+  position: relative; /* Added for absolute positioning of the night mode button */
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
 }
 
 nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
 }
 
 nav a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 main {
-    padding: 20px;
+  padding: 20px;
 }
 
 /* Night Mode Button Styling */
 .night-mode-button {
-    position: absolute; /* Changed from fixed to absolute */
-    top: 20px; /* Adjust as needed */
-    right: 20px; /* Adjust as needed */
-    z-index: 1000;
-    display: flex;
-    align-items: center;
+  position: absolute; /* Changed from fixed to absolute */
+  top: 20px; /* Adjust as needed */
+  right: 20px; /* Adjust as needed */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
 }
 
 .label {
-    background-color: #ddd;
-    display: flex;
-    align-items: center;
-    height: 30px;
-    width: 80px;
-    justify-content: space-between;
-    border-radius: 50px;
-    padding: 0 10px;
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.5s ease;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 80px;
+  justify-content: space-between;
+  border-radius: 50px;
+  padding: 0 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.5s ease;
 }
 
 .label .fa-moon {
-    color: #444;
-    transition: opacity 0.5s ease, transform 0.5s ease;
+  color: #444;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .label .fa-sun {
-    color: #f3bc24;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    opacity: 0; /* Hidden by default */
-    transform: scale(0.5); /* Small size by default */
+  color: #f3bc24;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0; /* Hidden by default */
+  transform: scale(0.5); /* Small size by default */
 }
 
 .blob {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    background-color: #007bff;
-    border-radius: 50%;
-    top: 2.5px;
-    left: 5px;
-    transition: all 0.5s ease;
-    z-index: 1; /* Ensure it doesn't overlap icons */
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: #007bff;
+  border-radius: 50%;
+  top: 2.5px;
+  left: 5px;
+  transition: all 0.5s ease;
+  z-index: 1; /* Ensure it doesn't overlap icons */
 }
 
 .checkbox {
-    opacity: 0;
-    position: absolute;
+  opacity: 0;
+  position: absolute;
 }
 
 .checkbox:checked ~ .label .blob {
-    left: 50px;
-    background-color: #f3bc24;
+  left: 50px;
+  background-color: #f3bc24;
 }
 
 .checkbox:checked ~ .label .fa-moon {
-    transform: scale(1);
-    opacity: 0;
+  transform: scale(1);
+  opacity: 0;
 }
 
 .checkbox:checked ~ .label .fa-sun {
-    transform: scale(1.5);
-    opacity: 1;
+  transform: scale(1.5);
+  opacity: 1;
 }
 
 /* Logout Button Styling */
 .logout {
-    position: absolute;
-    left: 25px;
-    top: 30px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    background-color: #ff5c5c;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+  position: absolute;
+  left: 25px;
+  top: 30px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: #ff5c5c;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .logout:hover {
-    background-color: #ff1a1a;
+  background-color: #ff1a1a;
 }
 
 /* Your Courses Section */
 #your-courses {
-    margin-top: 30px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
-    margin-bottom: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 30px;
 }
 
 #your-courses h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    font-weight: 600; /* Make title bold */
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 600; /* Make title bold */
 }
 
 #your-courses ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 
 #your-courses li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 #your-courses li a {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
 }
 
 #your-courses li a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Add Course Section */
 #add-course {
-    background-color: #fff;
-    padding: 20px;
-    margin-top: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%; /* Ensure it takes full width */
-    max-width: 800px; /* Limit max width for better visual balance */
+  background-color: #fff;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ensure it takes full width */
+  max-width: 800px; /* Limit max width for better visual balance */
 }
 
 #add-course h2 {
-    font-size: 24px;
-    color: #333; /* Default color */
+  font-size: 24px;
+  color: #333; /* Default color */
 }
 
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .form-group label {
-    font-size: 16px;
-    display: block;
-    margin-bottom: 5px;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 5px;
 }
 
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049;
+  background-color: #45a049;
+}
+
+/* Notification Bell Styles */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: -50px;
+}
+
+.notification-bell-container {
+  position: relative;
+}
+
+.notification-bell {
+  background: none;
+  border: none;
+  cursor: pointer;
+  right: 80px;
+  top: 10px;
+  position: relative;
+  font-size: 22px;
+  color: #fff;
+  outline: none;
+}
+
+.notification-bell:hover,
+.notification-bell:focus {
+  color: #ffd700;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+
+.notification-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #dc3545;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 2px 6px;
+  font-weight: bold;
+}
+
+.notifications-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 60px;
+  width: 320px;
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  padding: 15px 10px 10px 10px;
+}
+
+.notifications-dropdown h4 {
+  margin: 0 0 10px 10px;
+  font-size: 16px;
+  color: #007bff;
+}
+
+.notifications-list {
+  list-style: none;
+  padding: 0 10px 0 10px;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.notifications-list li {
+  background: #f8f9fa;
+  border: 1px solid #e1e1e1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.3s;
+  font-size: 15px;
+}
+
+.notifications-list li[style*="font-weight:bold"] {
+  background: #e7f1ff;
+}
+
+.mark-read-btn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.3s;
+}
+
+.mark-read-btn:hover {
+  background: #218838;
 }
 
 /* General Night Mode Styles */
 body.night {
-    background-color: #2c2c2c; /* Dark background */
-    color: #f0f0f0; /* Light text */
+  background-color: #2c2c2c; /* Dark background */
+  color: #f0f0f0; /* Light text */
 }
 
 body.night header {
-    background-color: #444; /* Darker header */
-    color: #ffffff; /* Light text */
+  background-color: #444; /* Darker header */
+  color: #ffffff; /* Light text */
 }
 
-body.night h1, body.night h2, body.night h3 {
-    color: #ffffff; /* Bright white headings */
+body.night h1,
+body.night h2,
+body.night h3 {
+  color: #ffffff; /* Bright white headings */
 }
 
 body.night p {
-    color: #ffffff; /* White text for readability */
+  color: #ffffff; /* White text for readability */
 }
 
 body.night #your-courses {
-    background-color: #333; 
-    color: #f0f0f0;
+  background-color: #333;
+  color: #f0f0f0;
 }
 
-body.night #your-courses h2, body.night #add-course h2 {
-    color: #ffffff; /* Bright white headings */
+body.night #your-courses h2,
+body.night #add-course h2 {
+  color: #ffffff; /* Bright white headings */
 }
 
 body.night #your-courses li a {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 body.night #add-course {
-    background-color: #333;
-    color: #f0f0f0;
-    border: 1px solid #4e4d4d;
+  background-color: #333;
+  color: #f0f0f0;
+  border: 1px solid #4e4d4d;
 }
 
 body.night #add-course h2 {
-    color: #fff; /* Bright white heading */
+  color: #fff; /* Bright white heading */
 }
 
 body.night #add-course input,
 body.night #add-course textarea {
-    background-color: #444; /* Darker input fields */
-    color: #f0f0f0; /* Light text */
-    border: 1px solid #666; /* Dark border */
+  background-color: #444; /* Darker input fields */
+  color: #f0f0f0; /* Light text */
+  border: 1px solid #666; /* Dark border */
 }
 
 body.night #add-course input::placeholder,
 body.night #add-course textarea::placeholder {
-    color: #bbb; /* Dimmed placeholder text for night mode */
+  color: #bbb; /* Dimmed placeholder text for night mode */
 }
 
 body.night #add-course button {
-    background-color: #555; /* Darker button */
-    color: #f0f0f0; /* Light text */
+  background-color: #555; /* Darker button */
+  color: #f0f0f0; /* Light text */
 }
 
 body.night #add-course button:hover {
-    background-color: #666; /* Slightly lighter hover state */
+  background-color: #666; /* Slightly lighter hover state */
 }
 
-/* Responsive Design for Mobile */
-@media (max-width: 768px) {
-    #your-courses,
-    #add-course {
-        width: 95%; /* Make both sections more responsive on small screens */
-        padding: 15px; /* Reduce padding for smaller devices */
-    }
-    
-    #your-courses h2, #add-course h2 {
-        font-size: 20px;
-    }
+body.night #notifications-tab {
+  background: #222;
+  color: #f0f0f0;
+}
+
+body.night .notifications-list li {
+  background: #2c2c2c;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+body.night .notifications-list li[style*="font-weight:bold"] {
+  background: #22334a;
+}
+
+body.night .mark-read-btn {
+  background: #3cb371;
+  color: #fff;
+}
+
+body.night .mark-read-btn:hover {
+  background: #267a4a;
+}
+
+body.night .notifications-dropdown {
+  background: #222;
+  color: #f0f0f0;
+  border: 1px solid #444;
+}
+
+body.night .notifications-list li {
+  background: #2c2c2c;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+body.night .notifications-list li[style*="font-weight:bold"] {
+  background: #22334a;
+}
+
+body.night .mark-read-btn {
+  background: #3cb371;
+  color: #fff;
+}
+
+body.night .mark-read-btn:hover {
+  background: #267a4a;
 }

@@ -15,7 +15,6 @@ $db = new Database();
 $submissionModel = new Submission($db);
 $submissions_result = $submissionModel->getSubmissionsByAssignment($assignment_id);
 
-// Fetch the assignment details
 $conn = $db->getConnection();
 $assignment_stmt = $conn->prepare("SELECT * FROM assignments WHERE id = ?");
 $assignment_stmt->bind_param("i", $assignment_id);
@@ -41,7 +40,7 @@ $assignment = $assignment_result->fetch_assoc();
 </head>
 <body>
     <header>
-        <h1>Submissions for: <?php echo htmlspecialchars($assignment['title']); ?></h1>
+        <h1>Submissions for: <?php echo htmlspecialchars($assignment['assignment_title']); ?></h1>
     </header>
 
     <main>
@@ -50,22 +49,23 @@ $assignment = $assignment_result->fetch_assoc();
             <?php while ($submission = $submissions_result->fetch_assoc()): ?>
                 <div class="submission">
                     <p><strong>Student ID:</strong> <?php echo htmlspecialchars($submission['student_id']); ?></p>
-                    <p><strong>File:</strong> <a href="<?php echo htmlspecialchars($submission['file_path']); ?>"><?php echo htmlspecialchars($submission['file_name']); ?></a></p>
+                    <p><strong>File:</strong>
+                        <a href="<?php echo htmlspecialchars($submission['file_path']); ?>" download>
+                            <?php echo htmlspecialchars($submission['file_name']); ?>
+                        </a>
+                    </p>
 
-                    <!-- Grade input form for instructor -->
-                    <form action="grade_submission.php" method="POST">
-                        <label for="grade_<?php echo $submission['id']; ?>">Grade:</label>
-                        <input type="number" name="grade" id="grade_<?php echo $submission['id']; ?>" min="0" max="100" value="<?php echo htmlspecialchars($submission['grade']); ?>" required>
-
-                        <input type="hidden" name="submission_id" value="<?php echo $submission['id']; ?>">
-                        <button type="submit">Submit Grade</button>
-                    </form>
-
-                    <!-- Display grade if it exists -->
-                    <?php if ($submission['grade'] !== NULL): ?>
-                        <p><strong>Grade:</strong> <?php echo htmlspecialchars($submission['grade']); ?></p>
-                    <?php else: ?>
+                    <?php if ($submission['grade'] === NULL): ?>
+                        <!-- Grade input form for instructor -->
+                        <form action="grade_submission.php?id=<?php echo urlencode($assignment_id); ?>" method="POST">
+                            <label for="grade_<?php echo $submission['id']; ?>">Grade:</label>
+                            <input type="number" name="grade" id="grade_<?php echo $submission['id']; ?>" min="0" max="100" required>
+                            <input type="hidden" name="submission_id" value="<?php echo $submission['id']; ?>">
+                            <button type="submit">Submit Grade</button>
+                        </form>
                         <p>No grade assigned yet.</p>
+                    <?php else: ?>
+                        <p><strong>Grade:</strong> <?php echo htmlspecialchars($submission['grade']); ?></p>
                     <?php endif; ?>
                 </div>
             <?php endwhile; ?>
@@ -77,13 +77,11 @@ $assignment = $assignment_result->fetch_assoc();
         const checkbox = document.getElementById("night-mode");
         const body = document.body;
 
-        // Check local storage for night mode preference
         if (localStorage.getItem('night-mode') === 'enabled') {
             body.classList.add("night");
             checkbox.checked = true;
         }
 
-        // Toggle night mode
         checkbox.addEventListener("change", function() {
             if (this.checked) {
                 body.classList.add("night");

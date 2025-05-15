@@ -127,11 +127,17 @@ $assignments_result = $stmt->get_result();
                 </div>
             </form>
 
-            <!-- "Check Submissions" Button -->
-            <form action="submissions.php" method="GET">
-                <input type="hidden" name="assignment_id" value="<?php echo $assignment['id']; ?>">
-                <button type="submit">Check Submissions</button>
-            </form>
+            <?php while ($assignment = $assignments_result->fetch_assoc()): ?>
+                <div>
+                    <h4><?= htmlspecialchars($assignment['assignment_title']) ?></h4>
+                    <p><?= htmlspecialchars($assignment['assignment_details']) ?></p>
+                    <!-- Other assignment info -->
+                    <form action="submissions.php" method="GET">
+                        <input type="hidden" name="assignment_id" value="<?= $assignment['id'] ?>">
+                        <button type="submit">Check Submissions</button>
+                    </form>
+                </div>
+            <?php endwhile; ?>
         </section>
     </main>
 

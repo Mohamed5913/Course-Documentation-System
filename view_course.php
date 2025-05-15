@@ -29,6 +29,24 @@ $quizzes = $quiz->getQuizzesByCourse($course_id);
 
 // Fetch assignments for the course
 $assignments = $assignment->getAssignmentsByCourse($course_id);
+$student_submissions = [];
+$submission_stmt = $db->getConnection()->prepare(
+    "SELECT assignment_id, grade FROM submissions WHERE student_id = ? AND assignment_id = ?"
+);
+
+$assignments_array = [];
+while ($assignment = $assignments->fetch_assoc()) {
+    $assignments_array[] = $assignment;
+}
+$assignments = $assignments_array;
+
+foreach ($assignments as &$assignment) {
+    $submission_stmt->bind_param("ii", $user_id, $assignment['id']);
+    $submission_stmt->execute();
+    $result = $submission_stmt->get_result();
+    $submission = $result->fetch_assoc();
+    $assignment['student_grade'] = $submission ? $submission['grade'] : null;
+}
 
 $material = new Material($db);
 $materials = $material->getMaterialsByCourse($course_id);
@@ -115,9 +133,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['assignment_file']) &
         <!-- Display Assignments -->
         <section class="assignments-section">
             <h3 class="section-title">Assignments</h3>
-            <?php if ($assignments->num_rows > 0): ?>
+            <?php if (!empty($assignments)): ?>
                 <ul>
-                    <?php while ($assignment = $assignments->fetch_assoc()): ?>
+                    <?php foreach ($assignments as $assignment): ?>
                         <li class="assignment-item">
                             <h4 class="assignment-name"><?= htmlspecialchars($assignment['assignment_title']) ?></h4>
                             <p class="assignment-details"><?= htmlspecialchars($assignment['assignment_details']) ?></p>
@@ -139,8 +157,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['assignment_file']) &
                                 <input type="file" name="assignment_file" id="assignment_file" required>
                                 <button type="submit">Submit Assignment</button>
                             </form>
+
+                            <?php if ($role === 'student' && $assignment['student_grade'] !== null): ?>
+                                <p class="assignment-grade"><strong>Your Grade:</strong> <?= htmlspecialchars($assignment['student_grade']) ?></p>
+                            <?php endif; ?>
                         </li>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </ul>
                 <?php if (isset($success_message)): ?>
                     <div class="success-message"><?= $success_message ?></div>

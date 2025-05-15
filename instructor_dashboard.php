@@ -17,6 +17,29 @@ $assignment = new Assignment($db);
 // Fetch courses created by the logged-in instructor
 $instructor_id = $_SESSION['id'];
 $courses = $course->getCoursesByInstructor($instructor_id);
+
+// Fetch notifications for the student
+$notifications = [];
+$conn = $db->getConnection();
+$stmt = $conn->prepare("SELECT id, message, is_read FROM notifications WHERE user_id = ? AND user_role = 'student' ORDER BY created_at DESC");
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $notifications[] = $row;
+}
+$unread = array_filter($notifications, fn($n) => !$n['is_read']);
+
+// Handle marking notifications as read
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
+    $notif_id = intval($_POST['mark_read_id']);
+    $stmt = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $notif_id, $student_id);
+    $stmt->execute();
+    // Refresh to update the notifications list
+    echo "<script>window.location.href=window.location.href;</script>";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +64,38 @@ $courses = $course->getCoursesByInstructor($instructor_id);
 
     <header>
         <h1>Instructor Dashboard</h1>
-        <a href="logout.php" class="logout">Logout</a>
+        <div class="header-actions">
+            <!-- Notification Bell -->
+            <div class="notification-bell-container">
+                <button id="notification-bell" class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <?php if (count($unread) > 0): ?>
+                        <span class="notification-count"><?= count($unread) ?></span>
+                    <?php endif; ?>
+                </button>
+                <div id="notifications-dropdown" class="notifications-dropdown" style="display:none;">
+                    <h4>Notifications</h4>
+                    <?php if (count($notifications) > 0): ?>
+                        <ul class="notifications-list">
+                            <?php foreach ($notifications as $notif): ?>
+                                <li style="<?php if(!$notif['is_read']) echo 'font-weight:bold;'; ?>">
+                                    <?= htmlspecialchars($notif['message']) ?>
+                                    <?php if (!$notif['is_read']): ?>
+                                        <form method="POST" action="" style="display:inline;">
+                                            <input type="hidden" name="mark_read_id" value="<?= $notif['id'] ?>">
+                                            <button type="submit" class="mark-read-btn">Mark as read</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="no-courses-message">No notifications.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <a href="logout.php" class="logout">Logout</a>
+        </div>
     </header>
 
     <main>
@@ -80,6 +134,29 @@ $courses = $course->getCoursesByInstructor($instructor_id);
                 <button type="submit">Add Course</button>
             </form>
         </section>
+
+        <!-- Notifications Tab -->
+        <div id="notifications-tab" class="tab-content" style="display:none;">
+            <h3>Your Notifications</h3>
+            <?php if (count($notifications) > 0): ?>
+                <ul class="notifications-list">
+                    <?php foreach ($notifications as $notif): ?>
+                        <li style="<?php if(!$notif['is_read']) echo 'font-weight:bold;'; ?>">
+                            <?= htmlspecialchars($notif['message']) ?>
+                            <small>(<?= $notif['created_at'] ?>)</small>
+                            <?php if (!$notif['is_read']): ?>
+                                <form method="POST" action="" style="display:inline;">
+                                    <input type="hidden" name="mark_read_id" value="<?= $notif['id'] ?>">
+                                    <button type="submit" class="mark-read-btn">Mark as read</button>
+                                </form>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No notifications.</p>
+            <?php endif; ?>
+        </div>
     </main>
 
     <script>
@@ -101,6 +178,18 @@ $courses = $course->getCoursesByInstructor($instructor_id);
                 } else {
                     body.classList.remove("night");
                     localStorage.setItem("night-mode", "disabled");
+                }
+            });
+
+            const bell = document.getElementById('notification-bell');
+            const dropdown = document.getElementById('notifications-dropdown');
+            document.addEventListener('click', function(event) {
+                // If bell is clicked, toggle dropdown
+                if (bell.contains(event.target)) {
+                    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+                } else {
+                    // Hide dropdown if clicked outside
+                    dropdown.style.display = 'none';
                 }
             });
         });

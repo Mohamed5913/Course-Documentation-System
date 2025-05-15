@@ -7,8 +7,11 @@ class Submission {
     }
 
     public function getSubmissionsByAssignment($assignment_id) {
-        $sql = "SELECT * FROM submissions WHERE assignment_id = ?";
-        return $this->db->query($sql, [$assignment_id]);
+        $conn = $this->db->getConnection();
+        $stmt = $conn->prepare("SELECT * FROM submissions WHERE assignment_id = ?");
+        $stmt->bind_param("i", $assignment_id);
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
     public function getSubmission($submission_id) {
