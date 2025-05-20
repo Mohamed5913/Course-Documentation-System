@@ -1,0 +1,2 @@
+2025-05-20 17:01:31 - File: CorrectingArabicSoftSpellingMistakesUsingTransformers (1).pdf - Result: Success
+2025-05-20 17:03:03 - File: CorrectingArabicSoftSpellingMistakesUsingTransformers (1).pdf - Result: Success
