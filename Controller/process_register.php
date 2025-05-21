@@ -3,6 +3,10 @@ session_start();
 
 include '../Model/Database.php';
 
+// Create a Database instance and get the connection
+$db = new Database();
+$conn = $db->getConnection();
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
