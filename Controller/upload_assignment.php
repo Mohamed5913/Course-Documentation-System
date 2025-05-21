@@ -29,6 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_assignment']))
         $db = new Database();
         $assignment = new Assignment($db);
         $assignment->addAssignment($course_id, $assignment_title, $assignment_details, $due_date, $file_path, $file_name, $instructor_id);
+
+        // Notify all students enrolled in the course
+        $students_sql = "SELECT student_id FROM course_registrations WHERE course_id = ?";
+        $students_stmt = $db->getConnection()->prepare($students_sql);
+        $students_stmt->bind_param("i", $course_id);
+        $students_stmt->execute();
+        $students_result = $students_stmt->get_result();
+
+        $notification_sql = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $notification_stmt = $db->getConnection()->prepare($notification_sql);
+        $notification_message = "New assignment uploaded: $assignment_title";
+
+        while ($student = $students_result->fetch_assoc()) {
+            $notification_stmt->bind_param("is", $student['student_id'], $notification_message);
+            $notification_stmt->execute();
+        }
+
         header("Location: ../View/course_details.php?id=$course_id&success=1");
         exit();
     } else {

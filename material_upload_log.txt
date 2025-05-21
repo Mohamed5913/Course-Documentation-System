@@ -1,5 +1,0 @@
-[2025-05-07 15:32:02] Material uploaded: Revision 1 by Instructor ID: 1
-[2025-05-07 15:56:30] Material uploaded: Simplex by Instructor ID: 1
-[2025-05-07 16:02:29] Material uploaded: Mohsen by Instructor ID: 1
-[2025-05-07 16:03:42] Material uploaded: NLP by Instructor ID: 1
-[2025-05-07 16:13:58] Material uploaded: NLP Revision by Instructor ID: 1
