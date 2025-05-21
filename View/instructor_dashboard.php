@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
     </div>
 
     <header>
-        <h1>Instructor Dashboard</h1>
+        <h1 class="dashboard-title">Instructor Dashboard</h1>
         <div class="header-actions">
             <!-- Notification Bell -->
             <div class="notification-bell-container">
@@ -105,8 +105,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
                 <ul>
                     <?php while ($course = $courses->fetch_assoc()): ?>
                         <li>
-                            <a href="course_details.php?id=<?= $course['id'] ?>"><?= htmlspecialchars($course['course_name']) ?></a>
-                            <p><?= htmlspecialchars($course['description']) ?></p>
+                            <div class="course-info" id="course-info-<?= $course['id'] ?>">
+                                <span class="course-title"><?= htmlspecialchars($course['course_name']) ?></span>
+                                <p><?= htmlspecialchars($course['description']) ?></p>
+                                <button class="edit-btn" onclick="showEditForm(<?= $course['id'] ?>)">Edit</button>
+                                <form class="delete-course-form" action="../Controller/delete_course.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="course_id" value="<?= $course['id'] ?>">
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this course?');" style="color:red;">Delete</button>
+                                </form>
+                            </div>
+                            <form class="edit-course-form" id="edit-form-<?= $course['id'] ?>" action="../Controller/edit_course.php" method="POST" style="display:none;">
+                                <input type="hidden" name="course_id" value="<?= $course['id'] ?>">
+                                <input type="text" name="course_name" value="<?= htmlspecialchars($course['course_name']) ?>" required>
+                                <textarea name="description" required><?= htmlspecialchars($course['description']) ?></textarea>
+                                <button type="submit">Save</button>
+                                <button type="button" onclick="hideEditForm(<?= $course['id'] ?>)">Cancel</button>
+                            </form>
+                            <a href="course_details.php?id=<?= $course['id'] ?>" class="access-course-btn">Access Course</a>
                         </li>
                     <?php endwhile; ?>
                 </ul>
@@ -167,6 +182,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
     </script>
     <?php endif; ?>
 
+    <?php if (isset($_GET['edit_success'])): ?>
+    <script>
+        alert('Course updated successfully!');
+    </script>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['delete_success'])): ?>
+    <script>
+        alert('Course deleted successfully!');
+    </script>
+    <?php endif; ?>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const checkbox = document.getElementById("night-mode");
@@ -201,6 +228,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_read_id'])) {
                 }
             });
         });
+
+        // Show edit form for a course
+        function showEditForm(courseId) {
+            document.getElementById('course-info-' + courseId).style.display = 'none';
+            document.getElementById('edit-form-' + courseId).style.display = 'block';
+        }
+
+        // Hide edit form for a course
+        function hideEditForm(courseId) {
+            document.getElementById('course-info-' + courseId).style.display = 'block';
+            document.getElementById('edit-form-' + courseId).style.display = 'none';
+        }
     </script>
 </body>
 </html>

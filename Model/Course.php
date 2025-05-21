@@ -51,5 +51,19 @@ class Course {
         $sql = "INSERT INTO course_registrations (student_id, course_id) VALUES (?, ?)";
         return $this->db->execute($sql, [$student_id, $course_id]);
     }
+
+    public function updateCourse($course_id, $course_name, $description) {
+        $conn = $this->db->getConnection();
+        $stmt = $conn->prepare("UPDATE courses SET course_name = ?, description = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $course_name, $description, $course_id);
+        return $stmt->execute();
+    }
+
+    public function deleteCourse($course_id) {
+        $conn = $this->db->getConnection();
+        $stmt = $conn->prepare("DELETE FROM courses WHERE id = ?");
+        $stmt->bind_param("i", $course_id);
+        return $stmt->execute();
+    }
 }
 ?>

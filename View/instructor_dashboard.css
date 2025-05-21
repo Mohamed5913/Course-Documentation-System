@@ -104,7 +104,7 @@ main {
 .logout {
   position: absolute;
   left: 25px;
-  top: 30px;
+  top: 15px;
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -131,76 +131,189 @@ main {
 }
 
 #your-courses h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  font-weight: 600; /* Make title bold */
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #007bff;
+  margin-bottom: 24px;
+  margin-top: 0;
+  text-align: left;
+  letter-spacing: 1px;
+  padding-left: 8px;
+  border-left: 5px solid #007bff;
+  background: linear-gradient(90deg, #eaf4ff 60%, transparent 100%);
+  display: inline-block;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.04);
 }
 
+/* Course List as Boxes */
 #your-courses ul {
   list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
 }
 
 #your-courses li {
-  margin-bottom: 15px;
+  background: #f9f9f9;
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: 20px 18px 18px 18px;
+  margin: 0;
+  width: 260px;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: box-shadow 0.2s;
 }
 
-#your-courses li a {
-  font-size: 18px;
+#your-courses li:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  border-color: #007bff;
+}
+
+.course-info {
+  margin-bottom: 12px;
+}
+
+.course-title {
+  font-size: 20px;
   font-weight: bold;
-  color: #333;
-  text-decoration: none;
+  color: #222;
+  margin-bottom: 8px;
+  display: block;
 }
 
-#your-courses li a:hover {
-  text-decoration: underline;
+.course-info p {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 10px;
 }
 
-/* Add Course Section */
+/* Edit and Delete Buttons */
+.edit-btn {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  display: inline-block;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.delete-course-form button {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 0;
+  transition: background 0.2s;
+  display: inline-block;
+}
+
+.delete-course-form button:hover {
+  background-color: #b71c1c !important;
+}
+
 #add-course {
   background-color: #fff;
-  padding: 20px;
-  margin-top: 30px;
+  padding: 28px 32px 28px 32px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Ensure it takes full width */
-  max-width: 800px; /* Limit max width for better visual balance */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  margin-top: 30px;
+  max-width: 420px;
+  margin-left: 0; /* Align to the left */
+  margin-right: auto; /* Remove centering */
+  clear: both;
+  border-left: 6px solid #007bff; /* Emphasize left border */
+  position: relative;
 }
 
 #add-course h2 {
-  font-size: 24px;
-  color: #333; /* Default color */
+  font-size: 22px;
+  margin-bottom: 18px;
+  font-weight: 700;
+  color: #222;
 }
 
-.form-group {
-  margin-bottom: 15px;
+#add-course form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.form-group label {
-  font-size: 16px;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group textarea {
+#add-course input[type="text"],
+#add-course textarea,
+#add-course input[type="datetime-local"] {
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
+  padding: 10px 12px;
+  border: 1.5px solid #bbb;
   border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 0;
+  background: #f7f7f7;
+  resize: vertical;
 }
 
-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
+#add-course textarea {
+  min-height: 70px;
+  max-height: 180px;
+}
+
+#add-course button[type="submit"] {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px 0;
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+  letter-spacing: 0.5px;
 }
 
-button:hover {
-  background-color: #45a049;
+#add-course button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+body.night #add-course {
+  background-color: #23272b;
+  color: #f0f0f0;
+  border-left: 6px solid #0056b3;
+}
+
+body.night #add-course input,
+body.night #add-course textarea,
+body.night #add-course input[type="datetime-local"] {
+  background-color: #333;
+  color: #f0f0f0;
+  border: 1.5px solid #555;
+}
+
+body.night #add-course button[type="submit"] {
+  background-color: #0056b3;
+}
+
+body.night #add-course button[type="submit"]:hover {
+  background-color: #003366;
 }
 
 /* Notification Bell Styles */
@@ -222,7 +335,6 @@ button:hover {
   border: none;
   cursor: pointer;
   right: 80px;
-  top: 10px;
   position: relative;
   font-size: 22px;
   color: #fff;
@@ -409,21 +521,102 @@ body.night .notifications-dropdown {
   border: 1px solid #444;
 }
 
-body.night .notifications-list li {
-  background: #2c2c2c;
+/* Night mode for course boxes */
+body.night #your-courses li {
+  background: #23272b;
   border: 1px solid #444;
   color: #f0f0f0;
 }
 
-body.night .notifications-list li[style*="font-weight:bold"] {
-  background: #22334a;
-}
-
-body.night .mark-read-btn {
-  background: #3cb371;
+body.night .course-title {
   color: #fff;
 }
 
-body.night .mark-read-btn:hover {
-  background: #267a4a;
+body.night .course-info p {
+  color: #ccc;
+}
+
+body.night .edit-course-form {
+  background: #2c3440;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+body.night .edit-course-form input[type="text"],
+body.night .edit-course-form textarea {
+  background: #23272b;
+  color: #f0f0f0;
+  border: 1px solid #555;
+}
+
+body.night .edit-btn {
+  background-color: #28a745;
+}
+
+body.night .edit-btn:hover {
+  background-color: #218838;
+}
+
+body.night .delete-course-form button {
+  background-color: #dc3545 !important;
+}
+
+body.night .delete-course-form button:hover {
+  background-color: #b71c1c !important;
+}
+
+.access-course-btn {
+  margin-top: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.access-course-btn:hover {
+  background-color: #0056b3;
+}
+
+body.night .access-course-btn {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+body.night .access-course-btn:hover {
+  background-color: #003366;
+}
+
+body.night #your-courses h2 {
+  color: #fff;
+  border-left: 5px solid #0056b3;
+  background: linear-gradient(90deg, #23272b 60%, transparent 100%);
+  box-shadow: 0 2px 8px rgba(0, 86, 179, 0.08);
+}
+.dashboard-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #007bff;
+  margin-bottom: 28px;
+  margin-top: 0;
+  text-align: left;
+  letter-spacing: 1px;
+  padding-left: 14px;
+  background: linear-gradient(90deg, #eaf4ff 60%, transparent 100%);
+  display: inline-block;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.06);
+}
+
+body.night .dashboard-title {
+  color: #fff;
+  background: linear-gradient(90deg, #23272b 60%, transparent 100%);
+  box-shadow: 0 2px 8px rgba(0, 86, 179, 0.1);
 }
